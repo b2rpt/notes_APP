@@ -18,7 +18,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { addNotes, removeNotes } from "../actions";
 import { Controls } from "./reusableComp/controls";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
@@ -103,11 +102,24 @@ export default function Homepage() {
                 notesArr.notes.map((m) => {
                   console.log(m);
                   return (
-                    <Paper variant="outlined" square style={{ padding: "5px" }}>
+                    <Paper
+                      variant="outlined"
+                      square
+                      style={{
+                        padding: "5px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        overflowWrap: "break-word",
+                      }}
+                    >
                       <Grid container>
                         <Grid item xs={10}>
-                          <Typography variant="h6">{m.title}</Typography>
-                          <Typography variant="subtitle1">{m.body}</Typography>
+                          <Typography nowrap variant="h6">
+                            {m.title}
+                          </Typography>
+                          <Typography nowrap variant="subtitle1">
+                            {m.body}
+                          </Typography>
                         </Grid>
                         <Grid item xs={2}>
                           <IconButton
