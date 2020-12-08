@@ -63,13 +63,19 @@ export default function Homepage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addNotes({ title: values.title, body: textArea }));
+    dispatch(
+      addNotes({
+        title: values.title,
+        body: textArea,
+        id: Math.random().toString(16).slice(2),
+      })
+    );
     setTextArea("");
     values.title = "";
   };
 
-  const handleRemove = (title) => {
-    dispatch(removeNotes({ title }));
+  const handleRemove = (id) => {
+    dispatch(removeNotes({ id }));
   };
 
   return (
@@ -100,11 +106,11 @@ export default function Homepage() {
             <Grid item xs={3} style={{ borderRight: "1px solid darkgrey" }}>
               {notesArr.notes.length > 0 &&
                 notesArr.notes.map((m) => {
-                  console.log(m);
                   return (
                     <Paper
                       variant="outlined"
                       square
+                      key={m.id}
                       style={{
                         padding: "5px",
                         overflow: "hidden",
@@ -114,10 +120,10 @@ export default function Homepage() {
                     >
                       <Grid container>
                         <Grid item xs={10}>
-                          <Typography nowrap variant="h6">
+                          <Typography nowrap="true" variant="h6">
                             {m.title}
                           </Typography>
-                          <Typography nowrap variant="subtitle1">
+                          <Typography nowrap="true" variant="subtitle1">
                             {m.body}
                           </Typography>
                         </Grid>
@@ -125,7 +131,7 @@ export default function Homepage() {
                           <IconButton
                             aria-label="delete"
                             size="small"
-                            onClick={() => handleRemove(m.title)}
+                            onClick={() => handleRemove(m.id)}
                           >
                             <ClearIcon />
                           </IconButton>

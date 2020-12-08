@@ -16,13 +16,12 @@ const notesReducer = (state = intialState, action) => {
       };
 
     case actionTypes.REMOVE_NOTES:
-      console.log(action.payload);
-      let title = action.payload;
+      let id = action.payload;
       return {
         ...state,
         notes: [
           ...x.filter((f) => {
-            return f.title !== title.title;
+            return f.id !== id.id;
           }),
         ],
       };
