@@ -7,6 +7,7 @@ const intialState = {
 
 const notesReducer = (state = intialState, action) => {
   let x = [...state.notes];
+  console.log(action);
   switch (action.type) {
     case actionTypes.ADD_NOTES:
       x.push(action.payload);
@@ -24,6 +25,22 @@ const notesReducer = (state = intialState, action) => {
             return f.id !== id.id;
           }),
         ],
+      };
+
+    case actionTypes.UPDATE_NOTES:
+      x.find((o, i) => {
+        if (o.id === action.payload.id) {
+          x[i] = {
+            title: action.payload.title,
+            body: action.payload.body,
+            id: action.payload.id,
+          };
+          return true; // stop searching
+        }
+      });
+      return {
+        ...state,
+        notes: [...x],
       };
 
     default:

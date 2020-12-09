@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import {
@@ -15,8 +15,9 @@ import useForm from "../hooks/useForm";
 import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import { useSelector, useDispatch } from "react-redux";
-import { addNotes, removeNotes } from "../actions";
+import { addNotes, removeNotes, updateNotes } from "../actions";
 import { Controls } from "./reusableComp/controls";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,19 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "100%",
     },
   },
+  btn: {
+    marginLeft: "89%",
+    "@media(max-width: 1000px)": {
+      marginLeft: "0%",
+    },
+  },
+  addNotesBtn: {
+    marginLeft: "75%",
+    marginTop:'25px',
+    "@media(max-width: 1000px)": {
+      marginLeft: "0%",
+    },
+  },
 }));
 
 const initialValues = {
@@ -56,6 +70,8 @@ export default function Homepage() {
   const notesArr = useSelector((state) => state.notes);
   const [textArea, setTextArea] = React.useState("");
   const { values, handleChange } = useForm(initialValues);
+  const [isAdd, setIsAdd] = useState(true);
+  const [updateId, setUpdateId] = useState("");
 
   const handleTextArea = (e) => {
     setTextArea(e.target.value);
@@ -67,7 +83,7 @@ export default function Homepage() {
       addNotes({
         title: values.title,
         body: textArea,
-        id: Math.random().toString(16).slice(2),
+        id: Date.now(),
       })
     );
     setTextArea("");
@@ -76,6 +92,30 @@ export default function Homepage() {
 
   const handleRemove = (id) => {
     dispatch(removeNotes({ id }));
+    setTextArea("");
+    values.title = "";
+  };
+
+  const handleEdit = (e) => {
+    console.log(e.id);
+    setTextArea(e.body);
+    values.title = e.title;
+    setIsAdd(false);
+    setUpdateId(e.id);
+  };
+
+  const updateValue = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateNotes({
+        title: values.title,
+        body: textArea,
+        id: updateId,
+      })
+    );
+    setTextArea("");
+    values.title = "";
+    setIsAdd(true);
   };
 
   return (
@@ -135,6 +175,13 @@ export default function Homepage() {
                           >
                             <ClearIcon />
                           </IconButton>
+                          <IconButton
+                            aria-label="edit"
+                            size="small"
+                            onClick={() => handleEdit(m)}
+                          >
+                            <EditIcon />
+                          </IconButton>
                         </Grid>
                       </Grid>
                     </Paper>
@@ -144,13 +191,13 @@ export default function Homepage() {
 
             <Box style={{ paddingLeft: "50px", maxWidth: "72%" }}>
               <Grid item xs={9} className={classes.grid}>
-                <Controls.Form onSubmit={handleSubmit}>
+                <Controls.Form onSubmit={isAdd ? handleSubmit : updateValue}>
                   <Button
+                    className={classes.addNotesBtn}
                     size="small"
                     variant="outlined"
                     type="button"
                     onClick={handleSubmit}
-                    style={{ marginLeft: "79%", marginTop: "10px" }}
                   >
                     <AddIcon />
                     {"add Notes"}
@@ -178,8 +225,12 @@ export default function Homepage() {
                     name="communityDescription"
                     onChange={handleTextArea}
                   ></textarea>
-                  <span style={{ marginLeft: "89%" }}>
-                    <Controls.Button label="Save" type="submit" size="small" />
+                  <span className={classes.btn}>
+                    <Controls.Button
+                      label={isAdd ? "save" : "update"}
+                      type="submit"
+                      size="small"
+                    />
                   </span>
                 </Controls.Form>
               </Grid>
