@@ -143,7 +143,7 @@ export default function Homepage() {
 
         <DialogContent style={{ padding: "1px 0px" }}>
           <Grid container style={{ height: "90%", flexWrap: "nowrap" }}>
-            <Grid item xs={3} style={{ borderRight: "1px solid darkgrey" }}>
+            <Grid item xs={3} style={{ borderRight: "1px solid darkgrey", overflowY:'auto', height: "80vh" }}>
               {notesArr.notes.length > 0 &&
                 notesArr.notes.map((m) => {
                   return (
@@ -152,7 +152,7 @@ export default function Homepage() {
                       square
                       key={m.id}
                       style={{
-                        padding: "5px",
+                        padding: "10px",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         overflowWrap: "break-word",
